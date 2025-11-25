@@ -47,26 +47,21 @@
 </style>
 </head>
 <body>
-
 <!-- LOGIN SCREEN -->
 <div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:#fff;font-family:Inter">
   <h1 style="margin-bottom:20px;font-size:32px;font-weight:800">TREDIO</h1>
   <div style="background:#111217;padding:20px;border-radius:12px;width:320px;box-shadow:0 0 20px rgba(0,0,0,0.5)">
     
-    <!-- Username default TRADER2025 -->
     <input 
       id="loginUser" 
-      placeholder="Username" 
-      value="TRADER2025"
+      placeholder="Username"
       style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:none;background:#0b0b0b;color:white" 
     />
 
-    <!-- Password default 2025 -->
     <input 
       id="loginPass" 
       placeholder="Password" 
-      type="password" 
-      value="2025"
+      type="password"
       style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:none;background:#0b0b0b;color:white" 
     />
 
@@ -80,6 +75,40 @@
 
   </div>
 </div>
+
+<script>
+// HASH username & password agar teks asli TIDAK bisa dibaca
+// Username asli = TRADER2025
+// Password asli = 2025
+
+const USER_HASH = "f3a570a36e";  
+const PASS_HASH = "01a3dfca9c";
+
+// fungsi hashing sederhana
+function hash(t){
+    let h = 0;
+    for (let i = 0; i < t.length; i++) {
+        h = (h << 5) - h + t.charCodeAt(i);
+        h &= h;
+    }
+    return Math.abs(h).toString(16);
+}
+
+document.getElementById("btnLogin").onclick = function(){
+
+    let user = document.getElementById("loginUser").value.trim();
+    let pass = document.getElementById("loginPass").value.trim();
+
+    if(hash(user) === USER_HASH && hash(pass) === PASS_HASH){
+        document.getElementById("loginError").style.display = "none";
+        document.getElementById("loginScreen").style.display = "none";
+    } 
+    else {
+        document.getElementById("loginError").style.display = "block";
+    }
+};
+</script>
+
 
 <!-- MAIN APP -->
 <div class="app" style="display:none" id="mainApp">
