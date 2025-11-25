@@ -289,7 +289,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
   }
 
   // SOUND TOGGLE
-  let audioCtx=null, soundEnabled=true;
+  let audioCtx=null, soundEnabled=false;
   soundToggle.addEventListener('click', ()=>{
     soundEnabled = !soundEnabled;
     soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
