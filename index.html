@@ -288,34 +288,56 @@ window.addEventListener('DOMContentLoaded', ()=>{
     return +(getBaseMinute() + (Math.random()-0.5)*0.03);
   }
 
-  // SOUND TOGGLE
-  let audioCtx=null, soundEnabled=false;
-  soundToggle.addEventListener('click', ()=>{
-    soundEnabled = !soundEnabled;
-    soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
-  });
+ // SOUND TOGGLE (default: OFF)
+let audioCtx = null;
+let soundEnabled = false;
 
-  function playTick(){
-    if(!soundEnabled) return;
-    try{
-      if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(1000,audioCtx.currentTime);
-      g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.06,audioCtx.currentTime+0.01);
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start(); g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.12);
-      o.stop(audioCtx.currentTime+0.15);
-    }catch(e){}
+// Pastikan tombol menampilkan icon OFF saat load
+soundToggle.textContent = "🔇";
+
+soundToggle.addEventListener("click", () => {
+  soundEnabled = !soundEnabled;
+  soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
+});
+
+// Fungsi suara "tick"
+function playTick() {
+  if (!soundEnabled) return;
+
+  try {
+    if (!audioCtx)
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+
+    o.type = "sine";
+    o.frequency.setValueAtTime(1000, audioCtx.currentTime);
+    g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.06, audioCtx.currentTime + 0.01);
+
+    o.connect(g);
+    g.connect(audioCtx.destination);
+
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.12);
+    o.stop(audioCtx.currentTime + 0.15);
+  } catch (e) {}
+}
+
+// Contoh update grafik (punya kamu)
+let labelCounter = 0;
+function pushPoint(h) {
+  chart.data.labels.push(labelCounter++);
+  chart.data.datasets[0].data.push(h);
+
+  if (chart.data.labels.length > 120) {
+    chart.data.labels.shift();
+    chart.data.datasets[0].data.shift();
   }
 
-  let labelCounter=0;
-  function pushPoint(h){
-    chart.data.labels.push(labelCounter++);
-    chart.data.datasets[0].data.push(h);
-    if(chart.data.labels.length>120){chart.data.labels.shift();chart.data.datasets[0].data.shift();}
-    chart.update('none');
-  }
+  chart.update("none");
+}
 
   // SMOOTH ANIMATION (requestAnimationFrame)
   let smoothTarget = null;
